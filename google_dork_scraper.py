@@ -12,7 +12,7 @@ class Scraper:
 
     def __init__(self, word):
         self.word = word
-        self.delay = 60.0
+        self.delay = 120.0
         self.jitter = numpy.random.uniform(low=self.delay, high=1.6 * self.delay, size=(50,))
         with open("user_agents.txt") as fp:
             self.random_user_agents = fp.readlines()
@@ -24,7 +24,7 @@ class Scraper:
         query = f"intitle:{self.word}"
         user_agent = random.choice(self.random_user_agents).strip()
         pause_time = self.delay + random.choice(self.jitter)
-        print(f"[*] Pause Time {pause_time} for google search")
+        print(f"[*] Pause Time {pause_time} for new google search")
 
         for url in googlesearch.search(
             query,
@@ -33,8 +33,7 @@ class Scraper:
             pause=pause_time,
             extra_params={"filter":"0"},
             user_agent=user_agent,
-            tbs="li:1", #verbatim mode no suggested results
-            lang="en" 
+            tbs="li:1" #verbatim mode no suggested results
         ):  
             self.links.append(url)
 

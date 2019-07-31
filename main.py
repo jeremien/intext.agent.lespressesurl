@@ -1,6 +1,7 @@
 from google_dork_scraper import *
 from extract import *
 import os, time
+from vpn import *
 
 def main():
     print("[*] Start")
@@ -35,13 +36,14 @@ def main():
         print(f"[*] All files processed")    
     else:
         print(f"[!] No results")
+        vpn()
 
 if __name__ == "__main__":
     try:
         i = 1
         while True:
             main()
-            time.sleep(10)
+            time.sleep(60)
             print(f"[*] iteration n°{i}")
             i += 1
     except KeyboardInterrupt:
