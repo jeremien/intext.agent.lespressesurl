@@ -1,0 +1,6 @@
+python pagodo.py -d example.com -g google_dorks_20190710_151500.txt -l 50 -s -e 35.0 -j 1.1
+
+https://www.exploit-db.com/google-hacking-database
+
+https://github.com/MarioVilas/googlesearch
+https://python-googlesearch.readthedocs.io/en/latest/
