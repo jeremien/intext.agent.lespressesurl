@@ -1,2 +1,5 @@
 vpn.py
-./data
+data/
+__pycache__/
+.vscode/
+.python-version
