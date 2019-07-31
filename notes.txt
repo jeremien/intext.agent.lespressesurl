@@ -4,3 +4,6 @@ https://www.exploit-db.com/google-hacking-database
 
 https://github.com/MarioVilas/googlesearch
 https://python-googlesearch.readthedocs.io/en/latest/
+
+# google == 2.0.1, module author changed import name to googlesearch
+# https://github.com/MarioVilas/googlesearch/commit/92309f4f23a6334a83c045f7c51f87b904e7d61d

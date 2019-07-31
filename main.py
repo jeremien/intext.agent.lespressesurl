@@ -1,30 +1,50 @@
+#!/usr/bin/env python
+
 from google_dork_scraper import *
 from extract import *
-import os, time
+import os, time, random
 from vpn import *
+import urllib
 
-def main():
+def get_timestamp():
+    """Retrieve a pre-formated datetimestamp."""
+    now = time.localtime()
+    timestamp = time.strftime("%m%d%Y_%H%M%S", now)
+    return timestamp
+
+def get_new_word():
+    """get a new word from wordlist"""
+    with open("words.txt", "r") as f:
+        content = f.readlines()
+    # content = [x.strip() for x in content]
+    content = list(dict.fromkeys(content))
+    words = random.choice(content)
+    # words = words.lower()
+    # words = words.capitalize()
+    return words 
+
+def main(num):
     print("[*] Start")
     time = get_timestamp()
     
-    word = ''
-    with open("words.txt", "r") as f:
-        for line in f: pass
-        word = line
+    print("[#] get a new word")
+    word = get_new_word()
 
     print(f"[*] Initiation timestamp: {time}")
     search_word = '"' + word + '"'
     scraper = Scraper(search_word)
     
-    print(f"[*] Querying Results for {search_word}")
+    print(f"[$] Querying Results for {search_word}")
     resultats = scraper.go()
 
-    if len(resultats):
+    print('resultats', resultats)
+    
+    if resultats:
         print(f"[*] Get {resultats}")
-        dirName = word
+        dirName = str(num) + '_' + word
         try:
-            os.mkdir(dirName)
-            print(f"[*] create directory {dirName}")
+            os.mkdir('./data/' + dirName)
+            print(f"[#] create directory {dirName}")
         except FileExistsError:
             print(f"[!] directory {dirName}")
         for i in range(len(resultats)):
@@ -33,18 +53,28 @@ def main():
             extract.get_content()
             extract.parse_content()
             extract.save_in_file(dirName)
-        print(f"[*] All files processed")    
+        print(f"[$] All files processed")    
     else:
         print(f"[!] No results")
         vpn()
 
+
 if __name__ == "__main__":
+
     try:
-        i = 1
+        f = open("compteur.txt", "r")
+        num = f.read()
+        num = int(num)
+
         while True:
-            main()
-            time.sleep(60)
-            print(f"[*] iteration n°{i}")
-            i += 1
+            main(num)
+            print(f"[*] iteration n°{num}")
+            time.sleep(1)
+            num += 1
+
     except KeyboardInterrupt:
-        print(f"[!] ending process at {i}")
+        print(f"[!] ending process at {num}")
+        f = open("compteur.txt", "w")
+        f.write(str(num))
+        f.close()
+

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import spacy
 from spacy_langdetect import LanguageDetector
 
@@ -6,40 +8,57 @@ class Wordlist:
 
     def __init__(self, phrase):
         self.phrase = phrase
-        self.nlp_en = spacy.load("en_core_web_sm")
-        self.nlp_fr = spacy.load("fr_core_news_sm")
+        self.nlp = spacy.load("en_core_web_sm")
+        # self.nlp = spacy.load("fr_core_news_sm")
 
     def langage_detection(self):
-        self.nlp_en.add_pipe(LanguageDetector(), name='language_detector', last=True)
-        doc = self.nlp_en(self.phrase)
+        """detect language"""
+        self.nlp.add_pipe(LanguageDetector(), name='language_detector', last=True)
+        doc = self.nlp(self.phrase)
         return doc._.language
 
-    def get_first_word(self):
+    def get_entity(self):
+        pass
+
+    def get_sentence(self):
+        pass
+
+    def get_combination(self):
+        """isolate words combination for search"""
         language = self.langage_detection()
-        print(language)
+        print('response from spacy', language)
         if language["language"] == 'en':
-            doc = self.nlp_en(self.phrase)
+            doc = self.nlp(self.phrase)
+            res = [chunk.text for chunk in doc.noun_chunks]
             f = open("words.txt", "a")
-            last_word = 'no word'
-            for token in doc:
-                # print(token.text, token.pos_)
-                if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
-                    last_word = token.text
-            f.write('\n' + last_word)
+            for r in res:
+                f.write('\n' + r)
+                print(f'[$] save {r} in list')
             f.close()
-        elif language["language"] == 'fr':
-            doc = self.nlp_fr(self.phrase)
+
+    def get_first_word(self):
+        """get pos from sentence and isolate words"""
+        language = self.langage_detection()
+        print('response from spacy', language)
+        if language["language"] == 'en':
+            doc = self.nlp(self.phrase)
             f = open("words.txt", "a")
-            last_word = 'no word'
             for token in doc:
-                # print(token.text, token.pos_)
-                if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
-                    last_word = token.text
-            f.write('\n' + last_word)
+                print(token.text, token.pos_)
+                if token.pos_ == 'NOUN':
+                    f.write('\n' + token.text)
+                    print(f'[$] save {token.text} in list')
+                elif token.pos_ == 'PROPN':
+                    f.write('\n' + token.text)
+                    print(f'[$] save {token.text} in list')
+                elif token.pos_ == 'ADJ':
+                    f.write('\n' + token.text)
+                    print(f'[$] save {token.text} in list')                                    
             f.close()
         else:
-            pass    
+            print(f'[!] no new word in list')
+   
 
 if __name__ == "__main__":
-    wordlist = Wordlist("What is Stuxnet?")
-    wordlist.get_first_word()
+    wordlist = Wordlist("How can I find a synonym for a word")
+    wordlist.get_combination()

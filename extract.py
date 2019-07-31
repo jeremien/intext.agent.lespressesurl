@@ -1,4 +1,4 @@
-from requests import get
+from requests import get, ConnectionError
 from bs4 import BeautifulSoup
 import re
 import tomd
@@ -14,34 +14,40 @@ class Extract:
 
     def get_content(self):
         self.data = []
-        response = get(self.url)
-        if response.status_code != 200:
-            print(f'[!] {response.status_code}')
+        try:
+            response = get(self.url)
+            if response.status_code != 200:
+                print(f'[!] {response.status_code}')
 
-        soup = BeautifulSoup(response.content, 'html5lib')
-        for tag in soup.find_all(True):
-            if tag.name == 'body':
-                titres = soup.find_all('h1')
-                print(titres)
-                try:
-                    if len(titres) != 0:
-                        wordlist = Wordlist(titres[0].get_text())
-                        wordlist.get_first_word()
-                    self.data.append(titres)
-                    img = soup.find_all('img')
-                    images = []
+            soup = BeautifulSoup(response.content, 'html5lib')
+            for tag in soup.find_all(True):
+                if tag.name == 'body':
+                    titres = soup.find_all('h1')
                     try:
-                        for i in img:
-                            src = i['src']
-                            link = f'![{src}]({src})'
-                            images.append(link)
-                    except KeyError:
+                        if titres:
+                            print(f'[#] send {titres[0].get_text()} to spacy')
+                            wordlist = Wordlist(titres[0].get_text())
+                            # wordlist.get_first_word()
+                            wordlist.get_combination()
+
+                        self.data.append(titres)
+                        img = soup.find_all('img')
+                        images = []
+                        try:
+                            for i in img:
+                                src = i['src']
+                                link = f'![{src}]({src})'
+                                images.append(link)
+                        except KeyError:
+                            continue
+                        self.data.append(images)
+                        paragraphes = soup.find_all('p')
+                        self.data.append(paragraphes)
+                    except IndexError:
                         continue
-                    self.data.append(images)
-                    paragraphes = soup.find_all('p')
-                    self.data.append(paragraphes)
-                except IndexError:
-                    continue
+        except ConnectionError:
+            print("network error")
+            pass
 
     def parse_content(self):
         self.markdown = []
@@ -61,7 +67,7 @@ class Extract:
 
     def save_in_file(self, dirName):
         try:
-            with open('./' + dirName + '/' + self.file_name + '.md', 'w') as file:
+            with open('./data/' + dirName + '/' + self.file_name + '.md', 'w') as file:
                 file.writelines('%s\n' % m for m in self.markdown)
             file.close()
         except FileExistsError:
