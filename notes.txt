@@ -7,3 +7,14 @@ https://python-googlesearch.readthedocs.io/en/latest/
 
 # google == 2.0.1, module author changed import name to googlesearch
 # https://github.com/MarioVilas/googlesearch/commit/92309f4f23a6334a83c045f7c51f87b904e7d61d
+
+https://korben.info/google-dorks-2019-liste.html
+
+https://medium.com/@ronnyml/website-screenshot-generator-with-python-593d6ddb56cb
+
+https://gist.github.com/stevenswafford/393c6ec7b5375d5e8cdc
+
+----------------------
+
+intitle:"$"
+site:*.org AND intext:"$"

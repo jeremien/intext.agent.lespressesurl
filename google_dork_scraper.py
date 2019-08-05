@@ -2,7 +2,6 @@
 
 import random
 import numpy
-import urllib
 import googlesearch 
 
 class Scraper:
@@ -19,8 +18,10 @@ class Scraper:
         """start scraping with google dork intitle"""
 
         self.links = []
-        query = f"intitle:{self.word}"
+        query = f"site:com intext:{self.word}"
+        print(f"[#] dork query: {query}")
         user_agent = random.choice(self.random_user_agents).strip()
+        print(user_agent)
         pause_time = self.delay + random.choice(self.jitter)
         print(f"[*] Pause Time {pause_time} for a new google search")
 
@@ -28,21 +29,22 @@ class Scraper:
             for url in googlesearch.search(
                 query,
                 start=0,
-                stop=50,
+                stop=30,
                 pause=pause_time,
                 extra_params={"filter":"0"},
                 user_agent=user_agent,
-                tbs="li:1"
+                tbs="qdr:m",
+                lang="en"
             ):  
                 self.links.append(url)
         
-        except urllib.error.URLError:
-            print("url error")
+        except Exception as err:
+            print("Error with {query}", err)
             pass
 
         return self.links
 
 if __name__ == "__main__":
-    scraper = Scraper("Stuxnet")
+    scraper = Scraper('"Stuxnet"')
     resultats = scraper.go()
     print(resultats)

@@ -40,7 +40,7 @@ class Wordlist:
         """get pos from sentence and isolate words"""
         language = self.langage_detection()
         print('response from spacy', language)
-        if language["language"] == 'en':
+        if language["language"] == 'fr':
             doc = self.nlp(self.phrase)
             f = open("words.txt", "a")
             for token in doc:
