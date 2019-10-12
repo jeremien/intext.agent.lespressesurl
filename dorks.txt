@@ -1,0 +1,12 @@
+site:com intext:
+site:org intitle:
+site:com inurl:
+intext:
+site:gov.uk intext:
+site:gov intext:
+site:https://www.nytimes.com/ allintext:
+site:com * 
+allintext:
+site:com allintext:
+site:gov * 
+site:gov allintext:

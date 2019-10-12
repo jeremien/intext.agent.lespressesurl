@@ -18,3 +18,9 @@ https://gist.github.com/stevenswafford/393c6ec7b5375d5e8cdc
 
 intitle:"$"
 site:*.org AND intext:"$"
+site:com intext:"{self.word}"
+site:gov intext:"{self.word}"
+----------------------
+
+https://asciinema.org/a/JZJtV6C07Zza0TrqlySfsmzFq
+https://whatis.techtarget.com/definition/Google-dork-query

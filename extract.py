@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re, sys
 import tomd
 from generate_wordlist import * 
-
+from colorama import Fore
 class Extract:
     """ extract class object"""
 
@@ -22,7 +22,7 @@ class Extract:
                 try:
                     titresH1 = soup.find_all('h1')
                     if titresH1:
-                        print(f'[#] send {titresH1[0].get_text()} to spacy')
+                        print(Fore.GREEN, f'[#] send {titresH1[0].get_text()} to spacy')
                         wordlist = Wordlist(titresH1[0].get_text())
                         wordlist.get_combination()
 
@@ -37,7 +37,7 @@ class Extract:
                             images.append(link)
                     
                     except KeyError as err:
-                        print("key error {0}".format(err))
+                        print(Fore.RED, "[!] key error {0}".format(err))
                         continue
                     
                     self.data.append(images)
@@ -46,7 +46,7 @@ class Extract:
                     self.data.append(paragraphes)
 
                 except IndexError as err:
-                    print("index error {0}".format(err))
+                    print(Fore.RED,"[!] index error {0}".format(err))
                     continue
 
     def get_content(self):
@@ -58,31 +58,35 @@ class Extract:
             response = get(self.url, allow_redirects=False)
             
             if response.status_code != 200:
-                print(f'[!] {response.status_code}')
-
-            content_type = response.headers.get('content-type')
-            
-            if 'text/html' in content_type:
-                print('html')
-
-                self.extract_content(response.content)
-            
-            elif 'application/pdf' in content_type:
-                print('pdf')
-                pass
+                print(Fore.RED, f'[!] {response.status_code}')
 
             else:
-                print(f'unknown type {content_type}')
+                content_type = response.headers.get('content-type')
+                
+                try:
+                    if 'text/html' in content_type:
+                        # print('html')
+
+                        self.extract_content(response.content)
+                    
+                    elif 'application/pdf' in content_type:
+                        # print('pdf')
+                        pass
+
+                    else:
+                        print(Fore.RED, f'[!] unknown type {content_type}')
+                
+                except TypeError as err:
+                    print(Fore.RED, f"[!] Type error : {err}") 
 
         except ConnectionError as err:
-            print("network error {0}".format(err))
+            print(Fore.RED, "[!] network error {0}".format(err))
             pass
 
     def parse_content(self):
         """ parse data from html to markdown """
         
         self.markdown = []
-        self.markdown.append(self.url + '\n')
 
         try:
             for item in self.data:
@@ -99,10 +103,13 @@ class Extract:
             filtered = [x.replace('\n', '') for x in filtered]
             filtered = [x.replace('\t', '') for x in filtered]            
             self.markdown = filtered
-
+        
         except RuntimeError as err:
-            print("Recursion {0}".format(err))
+            print(Fore.RED, "[!] Recursion {0}".format(err))
             pass
+
+        self.markdown.append('\n' + self.url)
+
         
     def save_in_file(self, dirName):
         """ savec markdown to file """
@@ -111,7 +118,7 @@ class Extract:
                 file.writelines('%s\n' % m for m in self.markdown)
             file.close()
         except FileExistsError:
-            print("file exist, skip", self.file_name)
+            print(Fore.RED, "[!] file exist, skip", self.file_name)
 
 if __name__ == "__main__":
     extract = Extract("http://www.lefigaro.fr/flash-eco/l-iran-enleve-des-zeros-au-rial-et-renomme-sa-monnaie-20190731", "new")

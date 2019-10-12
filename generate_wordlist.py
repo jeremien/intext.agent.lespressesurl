@@ -2,7 +2,7 @@
 
 import spacy
 from spacy_langdetect import LanguageDetector
-
+from colorama import Fore
 class Wordlist:
     """generate worldlist from search"""
 
@@ -26,20 +26,20 @@ class Wordlist:
     def get_combination(self):
         """isolate words combination for search"""
         language = self.langage_detection()
-        print('response from spacy', language)
+        print(Fore.GREEN,'[*] response from spacy', language)
         if language["language"] == 'en':
             doc = self.nlp(self.phrase)
             res = [chunk.text for chunk in doc.noun_chunks]
             f = open("words.txt", "a")
             for r in res:
                 f.write('\n' + r)
-                print(f'[$] save {r} in list')
+                print(Fore.BLUE, f'[$] save {r} in list')
             f.close()
 
     def get_first_word(self):
         """get pos from sentence and isolate words"""
         language = self.langage_detection()
-        print('response from spacy', language)
+        print(Fore.WHITE, '[*] response from spacy', language)
         if language["language"] == 'fr':
             doc = self.nlp(self.phrase)
             f = open("words.txt", "a")
@@ -47,16 +47,16 @@ class Wordlist:
                 print(token.text, token.pos_)
                 if token.pos_ == 'NOUN':
                     f.write('\n' + token.text)
-                    print(f'[$] save {token.text} in list')
+                    print(Fore.WHITE, f'[$] save {token.text} in list')
                 elif token.pos_ == 'PROPN':
                     f.write('\n' + token.text)
-                    print(f'[$] save {token.text} in list')
+                    print(Fore.WHITE, f'[$] save {token.text} in list')
                 elif token.pos_ == 'ADJ':
                     f.write('\n' + token.text)
-                    print(f'[$] save {token.text} in list')                                    
+                    print(Fore.WHITE, f'[$] save {token.text} in list')                                    
             f.close()
         else:
-            print(f'[!] no new word in list')
+            print(Fore.RED, f'[!] no new word in list')
    
 
 if __name__ == "__main__":
