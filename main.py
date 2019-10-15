@@ -22,13 +22,13 @@ def get_new_words():
     print(Fore.GREEN, f'[#] wordlist length : {len(content)}')
     if len(content) > 50 and len(content) < 199:
         for i in range(2):
-            word = '"' + random.choice(content).strip() + '"'
+            word = random.choice(content).strip()
             words.append(word)
         return ' '.join(words)
 
     elif len(content) > 200 and len(content) < 399:
         for i in range(3):
-            word = '"' + random.choice(content).strip() + '"'
+            word = random.choice(content).strip()
             words.append(word)
         return ' '.join(words)
 
@@ -41,13 +41,13 @@ def get_new_words():
     elif len(content) > 400:
         open("words.txt", "w").close()
         print(Fore.RED,'[!] reset wordlist')
-        return '"' + random.choice(content).strip() + '"'
+        return random.choice(content).strip()
 
     else:
         if content:
-            return '"' + random.choice(content).strip() + '"'
+            return random.choice(content).strip()
         else: 
-            return '"' + 'Stuxnet' + '"'
+            return 'Stuxnet'
 
 
 def main(num):
